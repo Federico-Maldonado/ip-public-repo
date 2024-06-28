@@ -19,6 +19,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.core.paginator import Paginator
 
+#import de messages
+from django.contrib import messages
+
+
 # función que invoca al template del índice de la aplicación.
 def index_page(request):
     return render(request, 'index.html')
@@ -104,7 +108,7 @@ def ingresar(request):
     if django_pbkdf2_sha256.verify(password, fila[1]) == True:
         # user = User.objects.create_user("admin", "admin")
 
-        user = authenticate(username="admin", password="admin")
+        user = authenticate(username=usuario, password=password)
         if user is not None:
                     login(request, user)
                     return render(request, 'index.html')
@@ -144,3 +148,27 @@ def deleteFavourite(request):
 def exit(request):
     logout(request)
     return render(request, 'index.html')
+
+#registro de usuarios
+def regis(request):
+    return render(request, 'registration/registration.html')
+
+def registrar(request):
+    usuario = request.POST.get('usuario', '')
+    conn = sqlite3.connect('db.sqlite3')
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM auth_user where username ='"'"+usuario+"'"'')
+    rows = cur.fetchall()
+    conn.close()
+    for row in rows:
+        fila= row
+    # if fila is not None:
+    #     if fila[4]==usuario:
+    #         # messages.add_message(request, CRITICAL, "Error ya existe otro usuario con el mismo nombre")
+    #         messages.add_message(request, messages.INFO, "Error ya existe otro usuario con el mismo nombre")
+    #         return render(request, 'registration/registration.html')    
+    # else:
+    services_nasa_image_gallery.saveNewuser(request)
+    login(request, usuario)
+    return render(request, 'index.html')
+

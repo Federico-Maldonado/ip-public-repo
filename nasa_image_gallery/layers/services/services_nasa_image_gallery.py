@@ -4,6 +4,8 @@ from ..transport import transport
 from ..dao import repositories
 from ..generic import mapper
 from django.contrib.auth import get_user
+#import de la libreria passlib para el login encriptacion y desencriptacion
+from passlib.hash import django_pbkdf2_sha256 
 
 
 def getAllImages(input=None):
@@ -63,4 +65,26 @@ def getAllFavouritesByUser(request):
 def deleteFavourite(request):
     favId = request.POST.get('id')
     return repositories.deleteFavourite(favId) # borramos un favorito por su ID.
-    
+
+#nuevo usuario
+
+def saveNewuser(request):
+    usuario = request.POST.get('usuario', '')
+    nombre = request.POST.get('nombre', '')
+    apellido = request.POST.get('apellido', '')
+    passw = request.POST.get('pass', '')
+    email = request.POST.get('email', '')
+    user=[]
+    user.append(usuario)
+    user.append(nombre)
+    user.append(apellido)
+    hash = django_pbkdf2_sha256.hash(passw)
+    user.append(hash)
+    user.append(email)
+
+    # fav=mapper.fromTemplateIntoNASACard(request)
+    # user = get_user(request)
+    #  # transformamos un request del template en una NASACard.
+    # fav.user = user # le seteamos el usuario correspondiente.
+
+    return repositories.saveNewuser(user) # lo guardamos en la base.
