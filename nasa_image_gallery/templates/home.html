@@ -27,7 +27,7 @@
                         <input type="hidden" name="title" value="{{ obj.title }}">
                         <input type="hidden" name="description" value="{{ obj.description }}">
                         <input type="hidden" name="image_url" value="{{ obj.image_url }}">
-                        <input type="hidden" name="date" value="{{ obj.date }}"> {% if imagen in favourite_list %}
+                        <input type="hidden" name="date" value="{{ obj.date }}"> {% if obj in favourite_list %}
                         <button type="submit" class="btn btn-primary btn-sm float-left" style="color:white" disabled>✔️ Ya está añadida a favoritos</button> {% else %}
                         <button type="submit" class="btn btn-primary btn-sm float-left" style="color:white">❤️ Añadir a favoritos</button> {% endif %}
 
@@ -57,6 +57,11 @@
             <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
         {% endif %}
     </span>
+</span>
+
+Showing {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{ page_obj.paginator.count }}
+
+</span>
 </div>
 {% endblock %}
 
