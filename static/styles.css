@@ -99,6 +99,7 @@ table.table td i {
 .pagination {
     float: right;
     margin: 0 0 5px;
+    padding-bottom: 4%;
 }
 
 .pagination li a {
