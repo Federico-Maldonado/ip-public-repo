@@ -12,22 +12,22 @@
 
 
     <div class="row row-cols-1 row-cols-md-3 g-4">
-        {% for imagen in images %}
+        {% for obj in page_obj %}
         <div class="col">
             <div class="card">
-                <img src="{{ imagen.image_url}}" class="card-img-top" alt="imagen">
+                <img src="{{ obj.image_url}}" class="card-img-top" alt="imagen">
                 <div class="card-body">
-                    <h5 class="card-title">{{ imagen.title}}</h5>
-                    <p class="card-text">{{ imagen.description}}</p>
+                    <h5 class="card-title">{{ obj.title}}</h5>
+                    <p class="card-text">{{ obj.description}}</p>
                 </div>
                 {% if request.user.is_authenticated %}
                 <div class="card-footer text-center">
                     <form method="post" action="{% url 'agregar-favorito' %}">
                         {% csrf_token %}
-                        <input type="hidden" name="title" value="{{ imagen.title }}">
-                        <input type="hidden" name="description" value="{{ imagen.description }}">
-                        <input type="hidden" name="image_url" value="{{ imagen.image_url }}">
-                        <input type="hidden" name="date" value="{{ imagen.date }}"> {% if imagen in favourite_list %}
+                        <input type="hidden" name="title" value="{{ obj.title }}">
+                        <input type="hidden" name="description" value="{{ obj.description }}">
+                        <input type="hidden" name="image_url" value="{{ obj.image_url }}">
+                        <input type="hidden" name="date" value="{{ obj.date }}"> {% if imagen in favourite_list %}
                         <button type="submit" class="btn btn-primary btn-sm float-left" style="color:white" disabled>✔️ Ya está añadida a favoritos</button> {% else %}
                         <button type="submit" class="btn btn-primary btn-sm float-left" style="color:white">❤️ Añadir a favoritos</button> {% endif %}
 
@@ -39,4 +39,24 @@
         {% endfor %}
     </div>
 </main>
+
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
 {% endblock %}
+
