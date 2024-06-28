@@ -1,5 +1,7 @@
 # capa de vista/presentación
 # si se necesita algún dato (lista, valor, etc), esta capa SIEMPRE se comunica con services_nasa_image_gallery.py
+#Para revisar cada uno de los campos del modelo
+from django.db.models import Q
 #import de la libreria passlib para el login encriptacion y desencriptacion
 from passlib.hash import django_pbkdf2_sha256
 #import de sqllite para BASE DE DATOS
@@ -53,15 +55,24 @@ def home(request):
 
 # función utilizada en el buscador.
 def search(request):
-    images, favourite_list = getAllImagesAndFavouriteList(request)
+    image, favourite_list = getAllImagesAndFavouriteList(request)
     search_msg = request.POST.get('username', '')
+    if search_msg:
+         favourite_list = favourite_list.filter(
+            Q(id__icontains=search_msg),
+            Q(title__icontains=search_msg),
+            Q(description__icontains=search_msg),
+            Q(image_url__icontains=search_msg),
+            Q(date__icontains=search_msg),
+            Q(user__icontains=search_msg),
+        ).distinct()   
     #revisa si es vacio para agregar por default "space"
-    #  if search_msg == '' :
-    #      search_msg == 'space'
-        
-
+    if search_msg == '' :
+        search_msg == 'space'
     # si el usuario no ingresó texto alguno, debe refrescar la página; caso contrario, debe filtrar aquellas imágenes que posean el texto de búsqueda.
     pass
+    return render(image, favourite_list)
+
 
 #funcion de login view
 def loginrequest(request):
