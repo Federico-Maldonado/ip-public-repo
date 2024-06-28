@@ -55,25 +55,29 @@ def home(request):
 
 # función utilizada en el buscador.
 def search(request):
+
+    images = []  
+    favourite_list = []
+    
     images, favourite_list = getAllImagesAndFavouriteList(request)
     search_msg = request.POST.get('query', '')
 
     # Añadir impresiones de depuración
-    print("search_msg:", search_msg)
-    print("images:", images)
-    print("favourite_list:", favourite_list)
-
+    # print("search_msg:", search_msg)
+    # print("images:", images)
+    # print("favourite_list:", favourite_list)
+    #images[5].description
+    #en caso de vacío va "space" hardcode
     if search_msg == '':
         search_msg = 'space'
 
-    filtered_images = [image for image in images if 
-                       search_msg.lower() in image['title'].lower() or 
-                       search_msg.lower() in image['description'].lower() or 
-                       search_msg.lower() in image['image_url'].lower() or 
-                       search_msg.lower() in image['date'].lower()]
+    
+    filtered_images = []
+    #por cada imagen que cumpla las condiciones de tener el mensaje dentro en descripcion o titulo se mete a a lista filtrada
+    for image in images:
+        if search_msg.lower() in image.title.lower() or search_msg in image.description.lower():
+            filtered_images.append(image) 
 
-    # Verificar imágenes filtradas
-    print("filtered_images:", filtered_images)
 
     return render(request, 'home.html', {'page_obj': filtered_images, 'favourite_list': favourite_list})
 #funcion de login view
@@ -103,9 +107,9 @@ def ingresar(request):
         user = authenticate(username="admin", password="admin")
         if user is not None:
                     login(request, user)
-                    return render(request, 'home.html')
+                    return render(request, 'index.html')
         else:
-                   return render(request, 'home.html')
+                   return render(request, 'index.html')
     
     else:
         return 'error'
